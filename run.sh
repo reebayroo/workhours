@@ -1,0 +1,1 @@
+DEBUG=workhours:* npm start

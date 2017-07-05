@@ -1,0 +1,52 @@
+id-empolis-pilot.sublime-workspace
+# Dependency directories
+node_modules/
+bower_components/
+
+# Optional npm cache directory
+.npm
+
+# Generated files for public consumption
+public/javascripts/primus.js
+
+# Optional REPL history
+.node_repl_history
+
+# Runtime data
+pids
+*.pid
+*.seed
+.tmp/
+client/build
+
+# OS Specific data
+.DS_Store
+
+# IDE Specific Files
+*.sublime*
+.vscode
+
+# Logs
+logs/*.log*
+*.log
+npm-debug.log*
+.idea
+*.iml
+
+# Reporter for Test Coverage
+coverage/
+
+# Ansible
+*.retry
+
+# LaTeX
+views/**/*.pdf
+.texpadtmp/
+
+# Keys
+secrets/
+
+.vagrant/
+
+# Local configuration overrides
+.local.config.js

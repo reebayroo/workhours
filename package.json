@@ -1,0 +1,53 @@
+{
+  "name": "workhours",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.3",
+    "express": "~4.15.2",
+    "guid": "0.0.12",
+    "jade": "~1.11.0",
+    "jquery": "^3.2.1",
+    "local-db": "^1.0.0",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "morgan": "~1.8.1",
+    "rootpath": "^0.1.2",
+    "semantic-ui": "^2.2.10",
+    "serve-favicon": "~2.4.2",
+    "sift": "^3.3.11",
+    "store": "^2.0.12"
+  },
+  "devDependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^6.2.10",
+    "babel-preset-es2015": "^6.24.1",
+    "css-loader": "^0.26.1",
+    "expose-loader": "^0.7.3",
+    "file-loader": "^0.11.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-env": "^0.4.0",
+    "gulp-jshint": "^2.0.4",
+    "gulp-nodemon": "^2.2.1",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-util": "^3.0.8",
+    "imports-loader": "^0.6.5",
+    "jshint": "^2.9.4",
+    "jshint-stylish": "^2.2.1",
+    "require-dir": "^0.3.2",
+    "run-sequence": "^1.2.2",
+    "sass-loader": "^4.1.1",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.14.0",
+    "webpack-stream": "^3.2.0"
+  }
+}

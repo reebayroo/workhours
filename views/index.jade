@@ -1,0 +1,129 @@
+extends layout
+
+block content
+    h1 Work Hours
+    .row
+        .ui.tabular.menu
+          .item.active(data-tab='tabProject'): a(href='#projects') Projects
+          .item(data-tab='tabHours'): a(href='#hours') Hours
+        .ui.tab.active(data-tab='tabProject')
+            .ui.two.column.grid
+                #projectsTemplateTarget.column
+                .column
+                    .ui.form
+                      input#projectId(type='hidden')
+                      .inline.fields
+                        .eight.wide.field
+                          label Project
+                          input#projectName(type='text', placeholder='Name')
+                        .eight.wide.field
+                          label Job Ticket                                
+                          input#projectTicketNumber(type='text', placeholder='Job Ticket')
+                        .eight.wide.field
+                          button.ui.primary.button.btn-save Save
+                          button.ui.button.btn-cancel Cancel
+        .ui.tab(data-tab='tabHours')
+            #hoursTemplateTarget.ui.two.column.grid
+
+
+
+block scripts
+    script#projectsTemplate.template(type='x-tmpl-mustache')
+        table.ui.celled.striped.table
+          thead
+            tr
+              th.ui.three.wide Project
+              th.ui.three.wide.right.aligned.collapsing Job Ticket
+              th.ui.two.wide Action
+          tbody
+            | {{#projects}}
+            tr
+              td {{name}}
+              td.right.aligned.collapsing {{ticketNumber}}
+              td
+                a.edit(href='javascript:void(0)', data-id='{{_id}}'): i.edit.icon
+                a.trash(href='javascript:void(0)', data-id='{{_id}}'): i.trash.icon
+            | {{/projects}}
+    script#hoursTemplate.template(type='x-tmpl-mustache')
+        .column
+            .ui.form
+              .inline.fields
+                .three.wide.field
+                    label.collapsing Select Month
+                .four.wide.field
+                    select 
+                        | {{#months}}
+                        | {{#selected}}
+                        option(selected='selected') {{label}}
+                        | {{/selected}}
+                        | {{^selected}}
+                        option {{label}}
+                        | {{/selected}}
+                        
+                        | {{/months}}
+        .column
+            .ui.grid                                
+                .four.wide.column &nbsp;
+                .three.wide.column.right.aligned
+                    button.ui.button 
+                        i.backward.icon
+                .six.wide.column
+                    h4.ui.header Week from 06/01 to 06/08
+                .three.wide.column
+                    button.ui.button 
+                        i.forward.icon
+        .ui.divider
+            .row
+                table.ui.celled.striped.table
+                  thead
+                    tr
+                      th.two.wide Project
+                      th.two.wide SUN 06/02
+                      th.two.wide MON 06/03
+                      th.two.wide TUE 06/04
+                      th.two.wide WED 06/05
+                      th.two.wide THU 06/06
+                      th.two.wide FRI 06/07
+                      th.two.wide SAT 06/08
+                  tbody
+                    tr
+                      th Nissan 1233444
+                      td
+                        .ui.fluid.input
+                            input(type='number')
+                      td 
+                        .ui.fluid.input
+                            input(type='number')
+                      td 
+                        .ui.fluid.input
+                            input(type='number')
+                      td 
+                        .ui.fluid.input
+                            input(type='number')
+                      td 
+                        .ui.fluid.input
+                            input(type='number')
+                      td 
+                        .ui.fluid.input
+                            input(type='number')
+                      td 
+                        .ui.fluid.input
+                            input(type='number')
+                                            
+                    tr
+                      th.two.wide Totals
+                      th.two.wide.center.aligned: h4 --
+                      th.two.wide.center.aligned: h4 8hs
+                      th.two.wide.center.aligned: h4 8hs
+                      th.two.wide.center.aligned: h4 8hs
+                      th.two.wide.center.aligned: h4 8hs
+                      th.two.wide.center.aligned: h4 8hs
+                      th.two.wide.center.aligned: h4 --
+            .row 
+                br
+            .row
+                .column
+                    button.ui.primary.right.floated.button.large Generate 
+
+    script.
+        WorkHours.Index.load()
