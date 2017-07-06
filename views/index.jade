@@ -23,7 +23,7 @@ block content
                           button.ui.primary.button.btn-save Save
                           button.ui.button.btn-cancel Cancel
         .ui.tab(data-tab='tabHours')
-            #hoursTemplateTarget.ui.two.column.grid
+            #hoursTemplateTarget
 
 
 
@@ -45,85 +45,65 @@ block scripts
                 a.trash(href='javascript:void(0)', data-id='{{_id}}'): i.trash.icon
             | {{/projects}}
     script#hoursTemplate.template(type='x-tmpl-mustache')
-        .column
-            .ui.form
-              .inline.fields
-                .three.wide.field
-                    label.collapsing Select Month
-                .four.wide.field
-                    select 
-                        | {{#months}}
-                        | {{#selected}}
-                        option(selected='selected') {{label}}
-                        | {{/selected}}
-                        | {{^selected}}
-                        option {{label}}
-                        | {{/selected}}
-                        
-                        | {{/months}}
-        .column
-            .ui.grid                                
-                .four.wide.column &nbsp;
-                .three.wide.column.right.aligned
-                    button.ui.button 
-                        i.backward.icon
-                .six.wide.column
-                    h4.ui.header Week from 06/01 to 06/08
-                .three.wide.column
-                    button.ui.button 
-                        i.forward.icon
-        .ui.divider
-            .row
+        .ui.two.column.grid
+            .column
+                .ui.form
+                  .inline.fields
+                    .three.wide.field
+                        label.collapsing Select Month
+                    .four.wide.field
+                        select 
+                            | {{#months}}
+                            | {{#selected}}
+                            option(selected='selected') {{label}}
+                            | {{/selected}}
+                            | {{^selected}}
+                            option {{label}}
+                            | {{/selected}}
+                            
+                            | {{/months}}
+            .column
+                .ui.grid                                
+                    .four.wide.column &nbsp;
+                    .three.wide.column.right.aligned
+                        button.ui.button 
+                            i.backward.icon
+                    .six.wide.column
+                        h4.ui.header {{currentWeek.label}}
+                    .three.wide.column
+                        button.ui.button 
+                            i.forward.icon
+        .row
+            br
+        .row
+            .column
                 table.ui.celled.striped.table
                   thead
                     tr
                       th.two.wide Project
-                      th.two.wide SUN 06/02
-                      th.two.wide MON 06/03
-                      th.two.wide TUE 06/04
-                      th.two.wide WED 06/05
-                      th.two.wide THU 06/06
-                      th.two.wide FRI 06/07
-                      th.two.wide SAT 06/08
+                      | {{#currentWeek.weekDaysLabels}}
+                      th.two.wide {{.}}
+                      | {{/currentWeek.weekDaysLabels}}
                   tbody
+                    | {{#currentWeek.projects}}  
                     tr
-                      th Nissan 1233444
+                      td(data-project-id="{{project._id}}"): strong: {{project.name}}
+                      | {{#entries}}  
                       td
                         .ui.fluid.input
-                            input(type='number')
-                      td 
-                        .ui.fluid.input
-                            input(type='number')
-                      td 
-                        .ui.fluid.input
-                            input(type='number')
-                      td 
-                        .ui.fluid.input
-                            input(type='number')
-                      td 
-                        .ui.fluid.input
-                            input(type='number')
-                      td 
-                        .ui.fluid.input
-                            input(type='number')
-                      td 
-                        .ui.fluid.input
-                            input(type='number')
-                                            
+                            input.center.aligned(type='number', value='{{hours}}', data-date='{{date}}')
+                      | {{/entries}}  
+                    | {{/currentWeek.projects}}  
                     tr
-                      th.two.wide Totals
-                      th.two.wide.center.aligned: h4 --
-                      th.two.wide.center.aligned: h4 8hs
-                      th.two.wide.center.aligned: h4 8hs
-                      th.two.wide.center.aligned: h4 8hs
-                      th.two.wide.center.aligned: h4 8hs
-                      th.two.wide.center.aligned: h4 8hs
-                      th.two.wide.center.aligned: h4 --
-            .row 
-                br
-            .row
-                .column
-                    button.ui.primary.right.floated.button.large Generate 
+                      td: strong Totals
+                      | {{#currentWeek.totals}} 
+                      td.total {{total}}
+                      | {{/currentWeek.totals}} 
+        .row 
+            br
+        .row
+            .column
+                button.ui.primary.right.floated.button.large Generate 
 
     script.
         WorkHours.Index.load()

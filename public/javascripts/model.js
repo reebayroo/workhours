@@ -29,10 +29,29 @@ class Model {
     return this.hoursState;
   }
   createHoursState() {
-    let currentMonth = moment().format('MMMM');
+    let currentMonth = moment().format('MMMM'),
+      today = moment(),
+      weekStart = moment().subtract(today.day(), 'days').clone(),
+      weekEnd = moment().subtract(today.day(), 'days').add(6, 'days');
+
     return {
       currentMonth: currentMonth,
-      months: _.map(moment.months(), (m) => ({ label: m, selected: m === currentMonth }))
+      months: _.map(moment.months(), (m) => ({ label: m, selected: m === currentMonth })),
+
+      currentWeek: {
+        label: `Week from ${weekStart.format('MM/DD')} to ${weekEnd.format('MM/DD')}`,
+        start: weekStart.clone(),
+        end: weekEnd.clone(),
+        weekDaysLabels: _.map(_.range(7), (d) => weekStart.clone().add(d, 'days').format('ddd MM/DD')),
+        projects: _.map(this.projects, (p) => ({
+          project: p,
+          entries: _.map(_.range(7), (d) => ({
+            hours: d,
+            date: weekStart.clone().add(d, 'days').format('MM-DD-YYYY')
+          }))
+        })),
+        totals: _.map(_.range(7), (d) => ({ total: d }))
+      }
     };
 
   }

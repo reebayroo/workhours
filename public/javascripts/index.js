@@ -44,6 +44,7 @@ function refreshHours() {
     months: hoursState.months,
     week: hoursState.currentWeek,
     hours: hoursState.hours,
+    currentWeek: hoursState.currentWeek
   });
   $('#hoursTemplateTarget').html(processedHtml).ready(rebindHours);
 }

@@ -58,8 +58,9 @@ var WorkHours =
 
 	__webpack_require__(139);
 	__webpack_require__(149);
-	__webpack_require__(150);
 	__webpack_require__(151);
+	__webpack_require__(152);
+	__webpack_require__(153);
 
 	console.log('Client .js imported');
 
@@ -128,7 +129,8 @@ var WorkHours =
 	  var processedHtml = _mustache2.default.render(hoursTemplate, {
 	    months: hoursState.months,
 	    week: hoursState.currentWeek,
-	    hours: hoursState.hours
+	    hours: hoursState.hours,
+	    currentWeek: hoursState.currentWeek
 	  });
 	  (0, _jquery2.default)('#hoursTemplateTarget').html(processedHtml).ready(rebindHours);
 	}
@@ -43437,12 +43439,39 @@ var WorkHours =
 	  }, {
 	    key: 'createHoursState',
 	    value: function createHoursState() {
-	      var currentMonth = (0, _moment2.default)().format('MMMM');
+	      var currentMonth = (0, _moment2.default)().format('MMMM'),
+	          today = (0, _moment2.default)(),
+	          weekStart = (0, _moment2.default)().subtract(today.day(), 'days').clone(),
+	          weekEnd = (0, _moment2.default)().subtract(today.day(), 'days').add(6, 'days');
+
 	      return {
 	        currentMonth: currentMonth,
 	        months: _lodash2.default.map(_moment2.default.months(), function (m) {
 	          return { label: m, selected: m === currentMonth };
-	        })
+	        }),
+
+	        currentWeek: {
+	          label: 'Week from ' + weekStart.format('MM/DD') + ' to ' + weekEnd.format('MM/DD'),
+	          start: weekStart.clone(),
+	          end: weekEnd.clone(),
+	          weekDaysLabels: _lodash2.default.map(_lodash2.default.range(7), function (d) {
+	            return weekStart.clone().add(d, 'days').format('ddd MM/DD');
+	          }),
+	          projects: _lodash2.default.map(this.projects, function (p) {
+	            return {
+	              project: p,
+	              entries: _lodash2.default.map(_lodash2.default.range(7), function (d) {
+	                return {
+	                  hours: d,
+	                  date: weekStart.clone().add(d, 'days').format('MM-DD-YYYY')
+	                };
+	              })
+	            };
+	          }),
+	          totals: _lodash2.default.map(_lodash2.default.range(7), function (d) {
+	            return { total: d };
+	          })
+	        }
 	      };
 	    }
 	  }]);
@@ -45844,6 +45873,46 @@ var WorkHours =
 
 /***/ }),
 /* 149 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(150);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(148)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!../../node_modules/css-loader/index.js!./override-style.css", function() {
+				var newContent = require("!!../../node_modules/css-loader/index.js!./override-style.css");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ }),
+/* 150 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(141)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "\ntd.total {\n    padding-right: 23px !important;\n    padding-left: 10px !important;\n    text-align: center !important;\n    font-weight: bold;\n }", ""]);
+
+	// exports
+
+
+/***/ }),
+/* 151 */
 /***/ (function(module, exports) {
 
 	/*!
@@ -46557,7 +46626,7 @@ var WorkHours =
 
 
 /***/ }),
-/* 150 */
+/* 152 */
 /***/ (function(module, exports) {
 
 	/*!
@@ -47658,7 +47727,7 @@ var WorkHours =
 
 
 /***/ }),
-/* 151 */
+/* 153 */
 /***/ (function(module, exports) {
 
 	/*!
