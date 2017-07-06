@@ -66,12 +66,12 @@ block scripts
                 .ui.grid                                
                     .four.wide.column &nbsp;
                     .three.wide.column.right.aligned
-                        button.ui.button 
+                        button.ui.button.previousWeek 
                             i.backward.icon
                     .six.wide.column
                         h4.ui.header {{currentWeek.label}}
                     .three.wide.column
-                        button.ui.button 
+                        button.ui.button.nextWeek 
                             i.forward.icon
         .row
             br
@@ -87,7 +87,7 @@ block scripts
                   tbody
                     | {{#currentWeek.projects}}  
                     tr
-                      td(data-project-id="{{project._id}}"): strong: {{project.name}}
+                      td(data-project-id="{{project._id}}"): strong: | {{project.name}}
                       | {{#entries}}  
                       td
                         .ui.fluid.input

@@ -20,13 +20,13 @@ require('rootpath')();
 
 // var dir = requireDir('./gulp-tasks');
 
-var watchDirs = '{client,server,bin,config,public,routes,test}',
+var watchDirs = '{server,bin,config,public,routes,test}',
   lintFiles = watchDirs + '/**/*.js',
   serverFiles = 'server/**/*.js',
   testFiles = 'test/**/*.js';
 
 gulp.task('lint', function() {
-  return gulp.src([watchDirs + '/**/*.js', '!client/build/*.js'])
+  return gulp.src([watchDirs + '/**/*.js', '!public/build/*.js'])
     .pipe(jshint('.jshintrc'))
     .pipe(jshint.reporter('jshint-stylish'));
 });
@@ -60,12 +60,12 @@ gulp.task('run', ['webpack'], function() {
       //   'NODE_ENV': 'development'
       // },
       verbose: true,
-      ignore: ['test/', 'client/', 'public/', 'node_modules/', 'logs/', 'archives/']
+      ignore: ['test/', 'public/', 'node_modules/', 'logs/', 'archives/']
     })
     .on('start', function() {
       gulp.watch([
         watchDirs + '/**/*.{js,css,scss}',
-        '!client/build/bundle.js'
+        '!public/build/bundle.js'
       ], ['webpack']);
     });
 });

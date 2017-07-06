@@ -38,7 +38,7 @@ function save() {
 }
 
 function refreshHours() {
-  let hoursState = model.getOrCreateHoursState();
+  let hoursState = model.getProjectHoursTable();
   console.log('hoursState ', hoursState);
   let processedHtml = mustache.render(hoursTemplate, {
     months: hoursState.months,
@@ -74,13 +74,21 @@ function editProject(e) {
 
 }
 
+function moveWeek(weekPosition) {
+  return () => {
+    model.moveWeek(weekPosition);
+    refreshHours();
+  };
+}
+
 function rebindProjects() {
   $('a.edit').click(editProject);
   $('a.trash').click(removeProject);
 }
 
 function rebindHours() {
-
+  $('.previousWeek').click(moveWeek(-1));
+  $('.nextWeek').click(moveWeek(1));
 }
 
 function load() {

@@ -5,8 +5,9 @@ import moment from 'moment';
 class Model {
   constructor() {
     this.projects = store.get('projects') || [];
-    this.hoursState = store.get('hourState') || null;
+    this.hoursState = store.get('hoursState') || null;
     this.month = [];
+    this.currentDay = moment();
   }
   addProject(name, ticketNumber) {
     this.projects.push({ name: name, ticketNumber: ticketNumber, _id: guid.raw() });
@@ -24,15 +25,20 @@ class Model {
   findById(projectId) {
     return _.find(this.projects, (item) => item._id === projectId);
   }
-  getOrCreateHoursState() {
-    this.hoursState = (!this.hoursState) ? this.createHoursState() : this.hoursState;
+  moveWeek(weekPosition) {
+    this.currentDay.add(weekPosition, 'week');
+    this.hoursState = this.createProjectHoursTable();
+  }
+  getProjectHoursTable() {
+    this.hoursState = (!this.hoursState) ? this.createProjectHoursTable() : this.hoursState;
     return this.hoursState;
   }
-  createHoursState() {
-    let currentMonth = moment().format('MMMM'),
-      today = moment(),
-      weekStart = moment().subtract(today.day(), 'days').clone(),
-      weekEnd = moment().subtract(today.day(), 'days').add(6, 'days');
+  createProjectHoursTable() {
+    console.log('->', this.currentDay);
+    let currentMonth = this.currentDay.format('MMMM'),
+
+      weekStart = this.currentDay.clone().subtract(this.currentDay.day(), 'days').clone(),
+      weekEnd = this.currentDay.clone().subtract(this.currentDay.day(), 'days').add(6, 'days');
 
     return {
       currentMonth: currentMonth,

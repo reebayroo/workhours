@@ -124,7 +124,7 @@ var WorkHours =
 	}
 
 	function refreshHours() {
-	  var hoursState = model.getOrCreateHoursState();
+	  var hoursState = model.getProjectHoursTable();
 	  console.log('hoursState ', hoursState);
 	  var processedHtml = _mustache2.default.render(hoursTemplate, {
 	    months: hoursState.months,
@@ -159,12 +159,22 @@ var WorkHours =
 	  (0, _jquery2.default)('#projectTicketNumber').val(project.ticketNumber);
 	}
 
+	function moveWeek(weekPosition) {
+	  return function () {
+	    model.moveWeek(weekPosition);
+	    refreshHours();
+	  };
+	}
+
 	function rebindProjects() {
 	  (0, _jquery2.default)('a.edit').click(editProject);
 	  (0, _jquery2.default)('a.trash').click(removeProject);
 	}
 
-	function rebindHours() {}
+	function rebindHours() {
+	  (0, _jquery2.default)('.previousWeek').click(moveWeek(-1));
+	  (0, _jquery2.default)('.nextWeek').click(moveWeek(1));
+	}
 
 	function load() {
 	  projectsTemplate = (0, _jquery2.default)('#projectsTemplate').html();
@@ -43398,8 +43408,9 @@ var WorkHours =
 	    _classCallCheck(this, Model);
 
 	    this.projects = _store2.default.get('projects') || [];
-	    this.hoursState = _store2.default.get('hourState') || null;
+	    this.hoursState = _store2.default.get('hoursState') || null;
 	    this.month = [];
+	    this.currentDay = (0, _moment2.default)();
 	  }
 
 	  _createClass(Model, [{
@@ -43431,18 +43442,24 @@ var WorkHours =
 	      });
 	    }
 	  }, {
-	    key: 'getOrCreateHoursState',
-	    value: function getOrCreateHoursState() {
-	      this.hoursState = !this.hoursState ? this.createHoursState() : this.hoursState;
+	    key: 'moveWeek',
+	    value: function moveWeek(weekPosition) {
+	      this.currentDay.add(weekPosition, 'week');
+	      this.hoursState = this.createProjectHoursTable();
+	    }
+	  }, {
+	    key: 'getProjectHoursTable',
+	    value: function getProjectHoursTable() {
+	      this.hoursState = !this.hoursState ? this.createProjectHoursTable() : this.hoursState;
 	      return this.hoursState;
 	    }
 	  }, {
-	    key: 'createHoursState',
-	    value: function createHoursState() {
-	      var currentMonth = (0, _moment2.default)().format('MMMM'),
-	          today = (0, _moment2.default)(),
-	          weekStart = (0, _moment2.default)().subtract(today.day(), 'days').clone(),
-	          weekEnd = (0, _moment2.default)().subtract(today.day(), 'days').add(6, 'days');
+	    key: 'createProjectHoursTable',
+	    value: function createProjectHoursTable() {
+	      console.log('->', this.currentDay);
+	      var currentMonth = this.currentDay.format('MMMM'),
+	          weekStart = this.currentDay.clone().subtract(this.currentDay.day(), 'days').clone(),
+	          weekEnd = this.currentDay.clone().subtract(this.currentDay.day(), 'days').add(6, 'days');
 
 	      return {
 	        currentMonth: currentMonth,
