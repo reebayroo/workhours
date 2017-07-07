@@ -6,7 +6,7 @@ require('!style!css!../stylesheets/override-style.css');
 require('../../semantic/dist/components/dimmer');
 require('../../semantic/dist/components/transition');
 require('../../semantic/dist/components/tab');
-
+require('jquery-number');
 import Index from './index';
 
 

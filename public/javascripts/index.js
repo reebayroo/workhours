@@ -7,11 +7,8 @@ import mustache from 'mustache';
 
 var model = new Model(),
   projectsTemplate,
-  hoursTemplate;
+  hoursTemplate, totalsTemplate;
 
-
-mustache.parse(projectsTemplate);
-mustache.parse(hoursTemplate);
 
 var editMode = {
     save: () => {
@@ -37,9 +34,18 @@ function save() {
   refreshProjects();
 }
 
+function refreshTotals() {
+
+  let hoursState = model.getProjectHoursTable();
+
+  let processedHtml = mustache.render(totalsTemplate, {
+    currentWeek: hoursState.currentWeek
+  });
+  $('#totalsTemplateTarget').html(processedHtml).ready(rebindHours);
+}
+
 function refreshHours() {
   let hoursState = model.getProjectHoursTable();
-  console.log('hoursState ', hoursState);
   let processedHtml = mustache.render(hoursTemplate, {
     months: hoursState.months,
     week: hoursState.currentWeek,
@@ -81,6 +87,18 @@ function moveWeek(weekPosition) {
   };
 }
 
+function registerHour() {
+  var self = $(this),
+    value = !!self.val() && parseInt(self.val(), 10) > 0 ? parseInt(self.val(), 10) : 0,
+    date = self.data('date'),
+    project = self.data('project');
+
+  self.val(value);
+  model.updateHours(project, date, value);
+  refreshTotals();
+
+}
+
 function rebindProjects() {
   $('a.edit').click(editProject);
   $('a.trash').click(removeProject);
@@ -89,11 +107,18 @@ function rebindProjects() {
 function rebindHours() {
   $('.previousWeek').click(moveWeek(-1));
   $('.nextWeek').click(moveWeek(1));
+  $('input.hours').number(false, 0).change(registerHour);
 }
 
 function load() {
   projectsTemplate = $('#projectsTemplate').html();
   hoursTemplate = $('#hoursTemplate').html();
+  totalsTemplate = $('#totalsTemplate').html();
+
+  mustache.parse(projectsTemplate);
+  mustache.parse(hoursTemplate);
+  mustache.parse(totalsTemplate);
+
   // body...
   $('.tabular.menu .item').tab({
     'onVisible': (tabName) => {
@@ -102,7 +127,6 @@ function load() {
   });
   $('.btn-save').click(save);
 
-  console.log('moment.months()', moment.months());
 
   refreshProjects();
 }

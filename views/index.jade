@@ -91,10 +91,10 @@ block scripts
                       | {{#entries}}  
                       td
                         .ui.fluid.input
-                            input.center.aligned(type='number', value='{{hours}}', data-date='{{date}}')
+                            input.hours.center.aligned(type='text', value='{{hours}}', data-date='{{date}}', data-project='{{project._id}}')
                       | {{/entries}}  
                     | {{/currentWeek.projects}}  
-                    tr
+                    tr#totalsTemplateTarget
                       td: strong Totals
                       | {{#currentWeek.totals}} 
                       td.total {{total}}
@@ -105,5 +105,11 @@ block scripts
             .column
                 button.ui.primary.right.floated.button.large Generate 
 
+    script#totalsTemplate.template(type='x-tmpl-mustache')
+        td: strong Totals
+        | {{#currentWeek.totals}} 
+        td.total {{total}}
+        | {{/currentWeek.totals}} 
+        
     script.
         WorkHours.Index.load()
