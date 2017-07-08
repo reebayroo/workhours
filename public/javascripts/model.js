@@ -1,6 +1,7 @@
 import guid from 'guid';
 import _ from 'lodash';
 import store from 'store';
+import beautify from 'json-beautify';
 import Moment from 'moment';
 import { extendMoment } from 'moment-range';
 const moment = extendMoment(Moment);
@@ -110,7 +111,7 @@ class Model {
       }))
       .value();
 
-    return JSON.stringify({ month: this.hoursState.currentMonth, start: start, end: end, dates: dates });
+    return beautify({ month: this.hoursState.currentMonth, start: start, end: end, dates: dates }, null, 2, 100);
   }
 
 }
