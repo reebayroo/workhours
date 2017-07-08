@@ -6,6 +6,7 @@ block content
         .ui.tabular.menu
           .item.active(data-tab='tabProject'): a(href='#projects') Projects
           .item(data-tab='tabHours'): a(href='#hours') Hours
+          .item(data-tab='tabReport'): a(href='#report') Report
         .ui.tab.active(data-tab='tabProject')
             .ui.two.column.grid
                 #projectsTemplateTarget.column
@@ -24,6 +25,9 @@ block content
                           button.ui.button.btn-cancel Cancel
         .ui.tab(data-tab='tabHours')
             #hoursTemplateTarget
+        .ui.tab(data-tab='tabReport')
+            .column
+                textarea#reportText(rows=30, cols=150) 
 
 
 
@@ -103,13 +107,13 @@ block scripts
             br
         .row
             .column
-                button.ui.primary.right.floated.button.large Generate 
+                button.ui.primary.right.floated.button.large#generateButton Generate 
 
     script#totalsTemplate.template(type='x-tmpl-mustache')
         td: strong Totals
         | {{#currentWeek.totals}} 
         td.total {{total}}
         | {{/currentWeek.totals}} 
-        
+
     script.
         WorkHours.Index.load()

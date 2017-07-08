@@ -1,7 +1,10 @@
 import guid from 'guid';
 import _ from 'lodash';
 import store from 'store';
-import moment from 'moment';
+import Moment from 'moment';
+import { extendMoment } from 'moment-range';
+const moment = extendMoment(Moment);
+
 class Model {
   constructor() {
     this.projects = store.get('projects') || [];
@@ -83,6 +86,31 @@ class Model {
       .each((t) => {
         t.total = this.timesheet[t.date].total;
       }).value();
+  }
+  generateReport() {
+
+    var start = this.hoursState.currentWeek.start.clone().startOf('month'),
+      end = this.hoursState.currentWeek.start.clone().endOf('month'),
+      range = moment.range(start, end),
+      convertProjects = (dayEntries, date) =>
+      _.chain(_.keys(dayEntries.entries))
+      .map((projectId) => this.findById(projectId))
+      .map((project) => ({
+        name: project.name,
+        ticketNumber: project.ticketNumber,
+        hours: [date.format('MM/DD/YYYY hh:mmA'), date.add(dayEntries.entries[project._id], 'hours').format('MM/DD/YYYY hh:mmA')],
+        total: dayEntries.entries[project._id],
+      })).value(),
+      dates = _.chain(Array.from(range.by('day')))
+      .map((d) => d.format('MM-DD-YYYY'))
+      .filter((d) => this.timesheet[d])
+      .map((d) => ({
+        date: d,
+        entries: convertProjects(this.timesheet[d], moment(d + ' 9:00', 'MM-DD-YYYY HH:mm'))
+      }))
+      .value();
+
+    return JSON.stringify({ month: this.hoursState.currentMonth, start: start, end: end, dates: dates });
   }
 
 }

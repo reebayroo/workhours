@@ -104,10 +104,18 @@ function rebindProjects() {
   $('a.trash').click(removeProject);
 }
 
+function generateReport() {
+  var text = model.generateReport();
+  /* this changes both the tab content and tab item */
+  $('.ui.menu').find('.item').tab('change tab', 'tabReport');
+  $('#reportText').val(text);
+}
+
 function rebindHours() {
   $('.previousWeek').click(moveWeek(-1));
   $('.nextWeek').click(moveWeek(1));
   $('input.hours').number(false, 0).change(registerHour);
+  $('#generateButton').click(generateReport);
 }
 
 function load() {
