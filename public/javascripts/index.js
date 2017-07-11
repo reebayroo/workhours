@@ -139,6 +139,7 @@ function submitHours() {
 let bindSubmitHours = function() {
   $('#submit').click(submitHours);
   $('#clear').click(() => {
+    $('#message').hide();
     $('#userName').val('');
     $('#password').val('');
     $('#reportText').val('');
