@@ -1,16 +1,15 @@
 import $ from 'jquery';
-import moment from 'moment';
-import _ from 'lodash';
 import Model from './model';
 import mustache from 'mustache';
+import axios from 'axios';
 
 
-var model = new Model(),
+let model = new Model(),
   projectsTemplate,
   hoursTemplate, totalsTemplate;
 
 
-var editMode = {
+let editMode = {
     save: () => {
 
       model.updateProject(
@@ -88,7 +87,7 @@ function moveWeek(weekPosition) {
 }
 
 function registerHour() {
-  var self = $(this),
+  let self = $(this),
     value = !!self.val() && parseInt(self.val(), 10) > 0 ? parseInt(self.val(), 10) : 0,
     date = self.data('date'),
     project = self.data('project');
@@ -105,7 +104,7 @@ function rebindProjects() {
 }
 
 function generateReport() {
-  var text = model.generateReport();
+  let text = model.generateReport();
   /* this changes both the tab content and tab item */
   $('.ui.menu').find('.item').tab('change tab', 'tabReport');
   $('#reportText').val(text);
@@ -117,6 +116,34 @@ function rebindHours() {
   $('input.hours').number(false, 0).change(registerHour);
   $('#generateButton').click(generateReport);
 }
+
+function submitHours() {
+  let username = $('#userName').val(),
+    password = $('#password').val(),
+    data = $('#reportText').val();
+  let pathname = window.location.origin;
+  return axios.post(`${pathname}/start`, {
+    username: username,
+    password: password,
+    data: data
+  }).then((res) => {
+      $('#message').show();
+      $('#error').append(res.data.message)
+    })
+    .catch((error) => {
+      $('#message').show();
+      $('#error').append('Error Please try again later');
+    });
+}
+
+let bindSubmitHours = function() {
+  $('#submit').click(submitHours);
+  $('#clear').click(() => {
+    $('#userName').val('');
+    $('#password').val('');
+    $('#reportText').val('');
+  });
+};
 
 function load() {
   projectsTemplate = $('#projectsTemplate').html();
@@ -134,7 +161,7 @@ function load() {
     }
   });
   $('.btn-save').click(save);
-
+  bindSubmitHours();
 
   refreshProjects();
 }

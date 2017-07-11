@@ -7,7 +7,9 @@
     "build": "webpack"
   },
   "dependencies": {
+    "axios": "^0.16.2",
     "body-parser": "~1.17.1",
+    "chromedriver": "^2.29.2",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
     "express": "~4.15.2",
@@ -21,7 +23,9 @@
     "moment": "^2.18.1",
     "moment-range": "^3.0.3",
     "morgan": "~1.8.1",
+    "mustache": "^2.3.0",
     "rootpath": "^0.1.2",
+    "selenium-webdriver": "^3.4.0",
     "semantic-ui": "^2.2.10",
     "serve-favicon": "~2.4.2",
     "sift": "^3.3.11",

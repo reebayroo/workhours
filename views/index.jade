@@ -18,7 +18,7 @@ block content
                           label Project
                           input#projectName(type='text', placeholder='Name')
                         .eight.wide.field
-                          label Job Ticket                                
+                          label Job Ticket
                           input#projectTicketNumber(type='text', placeholder='Job Ticket')
                         .eight.wide.field
                           button.ui.primary.button.btn-save Save
@@ -26,8 +26,22 @@ block content
         .ui.tab(data-tab='tabHours')
             #hoursTemplateTarget
         .ui.tab(data-tab='tabReport')
+            .column(style='display:none')#message
+              span(style='color: red')#error
             .column
-                textarea#reportText(rows=30, cols=150) 
+              .ui.form
+                .inline.fields
+                  .eight.wide.field
+                    label Username
+                    input#userName(type='text', placeholder='Username')
+                  .eight.wide.field
+                    label Password
+                    input#password(type='password', placeholder='Password')
+                  .eight.wide.field
+                    button.ui.primary.button#submit Submit Hours
+                    button.ui.negative.button#clear Clear
+            .column
+                textarea#reportText(rows=30, cols=150)
 
 
 
@@ -56,7 +70,7 @@ block scripts
                     .three.wide.field
                         label.collapsing Select Month
                     .four.wide.field
-                        select 
+                        select
                             | {{#months}}
                             | {{#selected}}
                             option(selected='selected') {{label}}
@@ -64,18 +78,18 @@ block scripts
                             | {{^selected}}
                             option {{label}}
                             | {{/selected}}
-                            
+
                             | {{/months}}
             .column
-                .ui.grid                                
+                .ui.grid
                     .four.wide.column &nbsp;
                     .three.wide.column.right.aligned
-                        button.ui.button.previousWeek 
+                        button.ui.button.previousWeek
                             i.backward.icon
                     .six.wide.column
                         h4.ui.header {{currentWeek.label}}
                     .three.wide.column
-                        button.ui.button.nextWeek 
+                        button.ui.button.nextWeek
                             i.forward.icon
         .row
             br
@@ -89,31 +103,31 @@ block scripts
                       th.two.wide {{.}}
                       | {{/currentWeek.weekDaysLabels}}
                   tbody
-                    | {{#currentWeek.projects}}  
+                    | {{#currentWeek.projects}}
                     tr
                       td(data-project-id="{{project._id}}"): strong: | {{project.name}}
-                      | {{#entries}}  
+                      | {{#entries}}
                       td
                         .ui.fluid.input
                             input.hours.center.aligned(type='text', value='{{hours}}', data-date='{{date}}', data-project='{{project._id}}')
-                      | {{/entries}}  
-                    | {{/currentWeek.projects}}  
+                      | {{/entries}}
+                    | {{/currentWeek.projects}}
                     tr#totalsTemplateTarget
                       td: strong Totals
-                      | {{#currentWeek.totals}} 
+                      | {{#currentWeek.totals}}
                       td.total {{total}}
-                      | {{/currentWeek.totals}} 
-        .row 
+                      | {{/currentWeek.totals}}
+        .row
             br
         .row
             .column
-                button.ui.primary.right.floated.button.large#generateButton Generate 
+                button.ui.primary.right.floated.button.large#generateButton Generate
 
     script#totalsTemplate.template(type='x-tmpl-mustache')
         td: strong Totals
-        | {{#currentWeek.totals}} 
+        | {{#currentWeek.totals}}
         td.total {{total}}
-        | {{/currentWeek.totals}} 
+        | {{/currentWeek.totals}}
 
     script.
         WorkHours.Index.load()
