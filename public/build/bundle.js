@@ -222,6 +222,7 @@ var WorkHours =
 	var bindSubmitHours = function bindSubmitHours() {
 	  (0, _jquery2.default)('#submit').click(submitHours);
 	  (0, _jquery2.default)('#clear').click(function () {
+	    (0, _jquery2.default)('#message').hide();
 	    (0, _jquery2.default)('#userName').val('');
 	    (0, _jquery2.default)('#password').val('');
 	    (0, _jquery2.default)('#reportText').val('');

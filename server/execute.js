@@ -16,8 +16,7 @@ class Execute {
     return this.invokeBrowser()
       .then(() => this.sendData(WebElements.USERNAME, username))
       .then(() => this.sendData(WebElements.PASSWORD, password))
-      .then(() => this.waitTimeOut.getElementWhenVisible(WebElements.TIME_SHEET_LOGIN))
-      .then((element) => element.click());
+      .then(() => this.click(WebElements.TIME_SHEET_LOGIN))
   }
 
   invokeBrowser() {
@@ -36,28 +35,21 @@ class Execute {
   validateTimeEntryAndSubmit() {
     return new Promise((resolve, reject) => {
       let days = ['DOWmonday', 'DOWtuesday', 'DOWwednesday', 'DOWthursday', 'DOWfriday'];
-      _.forEach(days, (day) => {
+      _.forEach(days, (day, i) => {
         this.click(Execute.dayBinder(day, null))
           .then(() => this.getElementText(Execute.dayBinder(day, 'span')))
           .then((savedHours) => {
             if (savedHours === '8.00') {
-
               // todo
-
-              this.quitBrowser();
-              resolve(savedHours);
-            } else {
-              this.quitBrowser();
-              reject(savedHours);
             }
-          });
+          }).then(() => i === _.size(days) ? (resolve) : '');
       })
     })
   }
 
   submitHours(timeSheet) {
     return new Promise((resolve, reject) => {
-      _.forEach(timeSheet, (day) => {
+      _.forEach(timeSheet, (day, i) => {
         console.log(`Entering data for ${day}`);
         if (day.totalHours > 0) {
           this.sendData(WebElements.SEARCH_WORK_ORDER, day.orderNumber)
@@ -66,7 +58,7 @@ class Execute {
             .then(() => this.sendData(WebElements.START_DATE, day.startTime))
             .then(() => this.sendData(WebElements.END_DATE, day.endTime))
             .then(() => this.click(WebElements.SAVE_ENTRY))
-            .then(resolve, reject)
+            .then(() => i === _.size(timeSheet) ? (resolve) : '')
         }
       });
     })
@@ -76,7 +68,7 @@ class Execute {
     return this.waitTimeOut.getElementWhenVisible(locator).then(element => {
       element.clear();
       return element.sendKeys(keys)
-    });
+    }).then(this.wait(500));
   }
 
   getURL(url) {
@@ -84,11 +76,13 @@ class Execute {
   }
 
   click(locator) {
-    return this.waitTimeOut.getElementWhenVisible(locator).then(element => element.click());
+    return this.waitTimeOut.getElementWhenVisible(locator)
+      .then(element => element.click())
+      .then(this.wait(500));
   }
 
   refreshPage() {
-    return this.driver.navigate().refresh().then(this.driver.sleep(1000))
+    return this.driver.navigate().refresh().then(this.wait(1000))
   }
 
   static dayBinder(day, span) {
@@ -102,6 +96,10 @@ class Execute {
 
   quitBrowser() {
     return this.driver.quit()
+  }
+
+  wait(ms) {
+    return this.driver.sleep(ms)
   }
 }
 
