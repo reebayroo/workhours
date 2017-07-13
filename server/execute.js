@@ -44,7 +44,7 @@ class Execute {
           .then((status) => {
             if (status[2] === 'Posted to E1' || status[2] === 'Submitted and Approved' ||
                 status[2] === 'Submitted to E1') {
-              console.log(`Hours for ${day} has been already entered.`);
+              console.log(`Hours for ${day} has been already submitted to E1.`);
             }
             if (status[2] === 'Saved Only') {
               status = _.filter(status, (s) => s !== '--');
