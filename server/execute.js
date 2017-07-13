@@ -3,6 +3,7 @@ let CreateDriver = require('./CreateDriver'),
   _ = require('lodash'),
   webdriver = require('selenium-webdriver'),
   By = webdriver.By,
+  Promise = require('bluebird'),
   WaitTimeOut = require('./wait-time-out');
 
 class Execute {
@@ -35,32 +36,34 @@ class Execute {
   validateTimeEntryAndSubmit() {
     return new Promise((resolve, reject) => {
       let days = ['DOWmonday', 'DOWtuesday', 'DOWwednesday', 'DOWthursday', 'DOWfriday'];
-      _.forEach(days, (day, i) => {
+      let promise = _.map(days, (day) => {
         this.click(Execute.dayBinder(day, null))
           .then(() => this.getElementText(Execute.dayBinder(day, 'span')))
           .then((savedHours) => {
             if (savedHours === '8.00') {
               // todo
+              return Promise.resolve();
             }
-          }).then(() => i === _.size(days) ? (resolve) : '');
-      })
+          });
+      });
+      Promise.all(promise).then(resolve, reject)
     })
   }
 
   submitHours(timeSheet) {
     return new Promise((resolve, reject) => {
-      _.forEach(timeSheet, (day, i) => {
-        console.log(`Entering data for ${day}`);
+      let promise = _.map(timeSheet, (day) => {
+        console.log(`Entering data for ${day.projectName}`);
         if (day.totalHours > 0) {
-          this.sendData(WebElements.SEARCH_WORK_ORDER, day.orderNumber)
+          return this.sendData(WebElements.SEARCH_WORK_ORDER, day.orderNumber)
             .then(() => this.click(WebElements.SEARCH_BUTTON))
             .then(() => this.click(WebElements.TYPE_HEAD))
             .then(() => this.sendData(WebElements.START_DATE, day.startTime))
             .then(() => this.sendData(WebElements.END_DATE, day.endTime))
-            .then(() => this.click(WebElements.SAVE_ENTRY))
-            .then(() => i === _.size(timeSheet) ? (resolve) : '')
+            .then(() => this.click(WebElements.SAVE_ENTRY));
         }
       });
+      Promise.all(promise).then(resolve, reject);
     })
   }
 

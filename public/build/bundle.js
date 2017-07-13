@@ -211,11 +211,11 @@ var WorkHours =
 	    password: password,
 	    data: data
 	  }).then(function (res) {
-	    (0, _jquery2.default)('#message').show();
-	    (0, _jquery2.default)('#error').append(res.data.message);
+	    (0, _jquery2.default)('#successMessage').show();
+	    (0, _jquery2.default)('#message').append(res.data.message);
 	  }).catch(function (error) {
-	    (0, _jquery2.default)('#message').show();
-	    (0, _jquery2.default)('#error').append('Error Please try again later');
+	    (0, _jquery2.default)('#errorMessage').show();
+	    (0, _jquery2.default)('#error').append(error);
 	  });
 	}
 
@@ -226,6 +226,7 @@ var WorkHours =
 	    (0, _jquery2.default)('#userName').val('');
 	    (0, _jquery2.default)('#password').val('');
 	    (0, _jquery2.default)('#reportText').val('');
+	    (0, _jquery2.default)('#error').empty();
 	  });
 	};
 

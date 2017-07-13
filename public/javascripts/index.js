@@ -127,12 +127,12 @@ function submitHours() {
     password: password,
     data: data
   }).then((res) => {
-      $('#message').show();
-      $('#error').append(res.data.message)
+      $('#successMessage').show();
+      $('#message').append(res.data.message)
     })
     .catch((error) => {
-      $('#message').show();
-      $('#error').append('Error Please try again later');
+      $('#errorMessage').show();
+      $('#error').append(error);
     });
 }
 
@@ -143,6 +143,7 @@ let bindSubmitHours = function() {
     $('#userName').val('');
     $('#password').val('');
     $('#reportText').val('');
+    $('#error').empty();
   });
 };
 

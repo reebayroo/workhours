@@ -26,8 +26,12 @@ block content
         .ui.tab(data-tab='tabHours')
             #hoursTemplateTarget
         .ui.tab(data-tab='tabReport')
-            .column(style='display:none')#message
-              span(style='color: red')#error
+            .ui.message(style='display:none')#errorMessage
+              .header.ui.red.label
+                #error
+            .ui.message(style='display:none')#successMessage
+              .header.ui.green.label
+                #message
             .column
               .ui.form
                 .inline.fields
