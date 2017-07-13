@@ -212,17 +212,18 @@ var WorkHours =
 	    data: data
 	  }).then(function (res) {
 	    (0, _jquery2.default)('#successMessage').show();
-	    (0, _jquery2.default)('#message').append(res.data.message);
+	    (0, _jquery2.default)('#message').empty().append(res.data.message);
 	  }).catch(function (error) {
 	    (0, _jquery2.default)('#errorMessage').show();
-	    (0, _jquery2.default)('#error').append(error);
+	    (0, _jquery2.default)('#error').empty().append(error);
 	  });
 	}
 
 	var bindSubmitHours = function bindSubmitHours() {
 	  (0, _jquery2.default)('#submit').click(submitHours);
 	  (0, _jquery2.default)('#clear').click(function () {
-	    (0, _jquery2.default)('#message').hide();
+	    (0, _jquery2.default)('#successMessage').hide();
+	    (0, _jquery2.default)('#errorMessage').hide();
 	    (0, _jquery2.default)('#userName').val('');
 	    (0, _jquery2.default)('#password').val('');
 	    (0, _jquery2.default)('#reportText').val('');

@@ -128,18 +128,19 @@ function submitHours() {
     data: data
   }).then((res) => {
       $('#successMessage').show();
-      $('#message').append(res.data.message)
+      $('#message').empty().append(res.data.message);
     })
     .catch((error) => {
       $('#errorMessage').show();
-      $('#error').append(error);
+      $('#error').empty().append(error);
     });
 }
 
 let bindSubmitHours = function() {
   $('#submit').click(submitHours);
   $('#clear').click(() => {
-    $('#message').hide();
+    $('#successMessage').hide();
+    $('#errorMessage').hide();
     $('#userName').val('');
     $('#password').val('');
     $('#reportText').val('');
