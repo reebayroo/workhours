@@ -21,6 +21,7 @@ class Execute {
       .then(() => this.sendData(WebElements.USERNAME, username))
       .then(() => this.sendData(WebElements.PASSWORD, password))
       .then(() => this.click(WebElements.TIME_SHEET_LOGIN))
+      .then(() => this.checkUser())
   }
 
   invokeBrowser() {
@@ -149,6 +150,15 @@ class Execute {
     let query = [Execute.dayBinder(day, 'span', 2), Execute.dayBinder(day, 'span', 3), WebElements.STATUS];
     let promise = _.map(query, (element) => this.getElementText(element));
     return Promise.all(promise).then((text) => text).catch((error) => error);
+  }
+
+  checkUser() {
+    return this.getElementText(WebElements.INVALID_USER, 1000)
+      .then((text) => {
+        if (text === 'The username or password is invalid.') {
+          return { user: 'invalid', error: text };
+        }
+      }).catch((error) => Promise.resolve());
   }
 }
 

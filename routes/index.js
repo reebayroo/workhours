@@ -23,7 +23,13 @@ router.post('/start', function(req, res, next) {
   let timeCard = new Execute(TIME_CARD_URL, 'chrome');
 
   return timeCard.authenticateUser(username, password)
-    .then(() => timeCard.executeTimeSheet(timeSheetParser.parse(data)))
+    .then((message) => {
+      if (message && message.user === 'invalid') {
+        timeCard.quitBrowser();
+        return res.json({ message: message.error })
+      }
+      return timeCard.executeTimeSheet(timeSheetParser.parse(data))
+    })
     .then((response) => res.json({ message: 'Hours has been successfully entered into the System.' }))
     .catch((error) => {
       //timeCard.quitBrowser();

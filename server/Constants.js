@@ -13,5 +13,6 @@ module.exports = Object.freeze({
   SAVE_ENTRY: By.id('btnSave'),
   SUBMIT_ENTRY: By.id('btnSubmit'),
   SUBMIT_SAVED_HOURS: By.xpath('//*[@class="text-right"]//button'),
-  STATUS: By.xpath('//*[@class="tle-data-row"]/div[1]//span')
+  STATUS: By.xpath('//*[@class="tle-data-row"]/div[1]//span'),
+  INVALID_USER: By.xpath('//*[@class="validation-summary-errors"]//li')
 });
