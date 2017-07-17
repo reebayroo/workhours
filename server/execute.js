@@ -31,16 +31,18 @@ class Execute {
       .then(() => this.getURL(this.url))
   }
 
-  executeTimeSheet(timeSheet) {
+  executeTimeSheet(timeSheet, submit) {
     return this.submitHours(timeSheet)
       .then(() => this.refreshPage())
-      .then(() => this.validateTimeEntryAndSubmit());
+      .then(() => this.validateTimeEntryAndSubmit(submit));
   }
 
-  validateTimeEntryAndSubmit() {
+  validateTimeEntryAndSubmit(submit) {
+    let message;
     return new Promise((resolve, reject) => {
+
       let promise = _.map(days, (day) => {
-        this.click(Execute.dayBinder(day, null))
+        return this.click(Execute.dayBinder(day, null))
           .then(() => this.checkStatus(day))
           .then((status) => {
             if (status[2] === 'Posted to E1' || status[2] === 'Submitted and Approved' ||
@@ -48,9 +50,11 @@ class Execute {
               console.log(`Hours for ${day} has been already submitted to E1.`);
             }
             if (status[2] === 'Saved Only') {
+
               status = _.filter(status, (s) => s !== '--');
               status.pop();
-              let promise = _.map(status, (s) => {
+
+              let innerPromise = _.map(status, (s) => {
                 let hours = parseInt(s);
                 if (hours > 8) {
                   throw `You can not enter more than 8 hours. User tried: ${status[0]}`;
@@ -58,25 +62,31 @@ class Execute {
                   throw `You can not enter Zero hours. User tried: ${status[0]}`
                 } else {
                   //todo
-                  this.click(WebElements.SUBMIT_SAVED_HOURS)
-                    .then(() => this.handleAlert())
-                    .then(this.wait(500))
-                    .then(() => this.checkStatus(day))
-                    .then((status) => {
-                      if (status[1] !== 'Posted to E1' || status[1] !== 'Submitted and Approved') {
-                        //throw `Hours not submitted for ${day}`;
-                      }
-                      return Promise.resolve();
-                    });
+                  if (submit) {
+                    this.click(WebElements.SUBMIT_SAVED_HOURS)
+                      .then(() => this.handleAlert())
+                      .then(this.wait(500))
+                      .then(() => this.checkStatus(day))
+                      .then((status) => {
+                        if (status[1] !== 'Posted to E1' || status[1] !== 'Submitted and Approved') {
+                          //throw `Hours not submitted for ${day}`;
+                        }
+                        message = 'Hours has been successfully entered into the System. Thank You!';
+                        return Promise.resolve();
+                      });
+                  } else {
+                    message = 'Please review your saved hours. Thank You!';
+                    return Promise.resolve();
+                  }
                 }
               });
-              return Promise.all(promise);
+              return Promise.all(innerPromise);
             }
             console.log(status);
             return Promise.resolve();
           });
       });
-      Promise.all(promise).then(resolve, reject)
+      Promise.all(promise).then(() => resolve(message)).catch(reject)
     })
   }
 
@@ -147,9 +157,15 @@ class Execute {
   }
 
   checkStatus(day) {
-    let query = [Execute.dayBinder(day, 'span', 2), Execute.dayBinder(day, 'span', 3), WebElements.STATUS];
+
+    let query = [Execute.dayBinder(day, 'span', 2), Execute.dayBinder(day, 'span', 3)];
     let promise = _.map(query, (element) => this.getElementText(element));
-    return Promise.all(promise).then((text) => text).catch((error) => error);
+
+    return Promise.all(promise).then((hours) =>
+      this.getElementText(WebElements.STATUS, 1000).then((status) => {
+        hours.push(status);
+        return hours;
+      }).catch((error) => hours)).catch((error) => error);
   }
 
   checkUser() {

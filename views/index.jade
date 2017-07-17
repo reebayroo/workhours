@@ -1,137 +1,146 @@
 extends layout
 
 block content
-    h1 Work Hours
-    .row
-        .ui.tabular.menu
-          .item.active(data-tab='tabProject'): a(href='#projects') Projects
-          .item(data-tab='tabHours'): a(href='#hours') Hours
-          .item(data-tab='tabReport'): a(href='#report') Report
-        .ui.tab.active(data-tab='tabProject')
-            .ui.two.column.grid
-                #projectsTemplateTarget.column
-                .column
-                    .ui.form
-                      input#projectId(type='hidden')
-                      .inline.fields
-                        .eight.wide.field
-                          label Project
-                          input#projectName(type='text', placeholder='Name')
-                        .eight.wide.field
-                          label Job Ticket
-                          input#projectTicketNumber(type='text', placeholder='Job Ticket')
-                        .eight.wide.field
-                          button.ui.primary.button.btn-save Save
-                          button.ui.button.btn-cancel Cancel
-        .ui.tab(data-tab='tabHours')
-            #hoursTemplateTarget
-        .ui.tab(data-tab='tabReport')
-            .ui.message(style='display:none')#errorMessage
-              .header.ui.red.label
-                #error
-            .ui.message(style='display:none')#successMessage
-              .header.ui.green.label
-                #message
-            .column
-              .ui.form
-                .inline.fields
-                  .eight.wide.field
-                    label Username
-                    input#userName(type='text', placeholder='Username')
-                  .eight.wide.field
-                    label Password
-                    input#password(type='password', placeholder='Password')
-                  .eight.wide.field
-                    button.ui.primary.button#submit Submit Hours
-                    button.ui.negative.button#clear Clear
-            .column
-                textarea#reportText(rows=30, cols=150)
+  h1 Work Hours
+  .row
+    .ui.tabular.menu
+      .item.active(data-tab='tabProject'): a(href='#projects') Projects
+      .item(data-tab='tabHours'): a(href='#hours') Hours
+      .item(data-tab='tabReport'): a(href='#report') Report
+    .ui.tab.active(data-tab='tabProject')
+      .ui.two.column.grid
+        #projectsTemplateTarget.column
+        .column
+          .ui.form
+            input#projectId(type='hidden')
+            .inline.fields
+              .eight.wide.field
+                label Project
+                input#projectName(type='text', placeholder='Name')
+              .eight.wide.field
+                label Job Ticket
+                input#projectTicketNumber(type='text', placeholder='Job Ticket')
+              .eight.wide.field
+                button.ui.primary.button.btn-save Save
+                button.ui.button.btn-cancel Cancel
+    .ui.tab(data-tab='tabHours')
+      #hoursTemplateTarget
+    .ui.tab(data-tab='tabReport')
+      .ui.message(style='display:none')#errorMessage
+        .header.ui.red.label
+          #error
+      .ui.message(style='display:none')#successMessage
+        .header.ui.green.label
+          #message
+      .segment(style='display:none')#loader
+        .ui.active.inverted.dimmer
+          .ui.text.huge.loader Loading
+        p
+      .column
+        .ui.form
+          .inline.fields
+            .eight.wide.field
+              label Username
+              input#userName(type='text', placeholder='Username')
+            .eight.wide.field
+              label Password
+              input#password(type='password', placeholder='Password')
+            .three.wide.field
+              .ui.checkbox
+                input#submitHoursCheckbox(name='submitHours', type='checkbox')
+                label Submit Hours
+            .eight.wide.field
+              button.ui.primary.button#submit Save Hours
+              button.ui.negative.button#clear Clear
+
+  .column
+    textarea#reportText(rows=30, cols=150)
 
 
 
 block scripts
-    script#projectsTemplate.template(type='x-tmpl-mustache')
+  script#projectsTemplate.template(type='x-tmpl-mustache')
+    table.ui.celled.striped.table
+      thead
+        tr
+          th.ui.three.wide Project
+          th.ui.three.wide.right.aligned.collapsing Job Ticket
+          th.ui.two.wide Action
+      tbody
+        | {{#projects}}
+        tr
+          td {{name}}
+          td.right.aligned.collapsing {{ticketNumber}}
+          td
+            a.edit(href='javascript:void(0)', data-id='{{_id}}'): i.edit.icon
+            a.trash(href='javascript:void(0)', data-id='{{_id}}'): i.trash.icon
+        | {{/projects}}
+  script#hoursTemplate.template(type='x-tmpl-mustache')
+    .ui.two.column.grid
+      .column
+        .ui.form
+          .inline.fields
+            .three.wide.field
+              label.collapsing Select Month
+            .four.wide.field
+              select
+                | {{#months}}
+                | {{#selected}}
+                option(selected='selected') {{label}}
+                | {{/selected}}
+                | {{^selected}}
+                option {{label}}
+                | {{/selected}}
+
+                | {{/months}}
+      .column
+        .ui.grid
+          .four.wide.column &nbsp;
+          .three.wide.column.right.aligned
+            button.ui.button.previousWeek
+              i.backward.icon
+          .six.wide.column
+            h4.ui.header {{currentWeek.label}}
+          .three.wide.column
+            button.ui.button.nextWeek
+              i.forward.icon
+    .row
+      br
+    .row
+      .column
         table.ui.celled.striped.table
           thead
             tr
-              th.ui.three.wide Project
-              th.ui.three.wide.right.aligned.collapsing Job Ticket
-              th.ui.two.wide Action
+              th.two.wide Project
+              | {{#currentWeek.weekDaysLabels}}
+              th.two.wide {{.}}
+              | {{/currentWeek.weekDaysLabels}}
           tbody
-            | {{#projects}}
+            | {{#currentWeek.projects}}
             tr
-              td {{name}}
-              td.right.aligned.collapsing {{ticketNumber}}
+              td(data-project-id="{{project._id}}"): strong: | {{project.name}}
+              | {{#entries}}
               td
-                a.edit(href='javascript:void(0)', data-id='{{_id}}'): i.edit.icon
-                a.trash(href='javascript:void(0)', data-id='{{_id}}'): i.trash.icon
-            | {{/projects}}
-    script#hoursTemplate.template(type='x-tmpl-mustache')
-        .ui.two.column.grid
-            .column
-                .ui.form
-                  .inline.fields
-                    .three.wide.field
-                        label.collapsing Select Month
-                    .four.wide.field
-                        select
-                            | {{#months}}
-                            | {{#selected}}
-                            option(selected='selected') {{label}}
-                            | {{/selected}}
-                            | {{^selected}}
-                            option {{label}}
-                            | {{/selected}}
+                .ui.fluid.input
+                  input.hours.center.aligned(type='text', value='{{hours}}', data-date='{{date}}', data-project='{{project._id}}')
+              | {{/entries}}
+            | {{/currentWeek.projects}}
+            tr#totalsTemplateTarget
+              td: strong Totals
+              | {{#currentWeek.totals}}
+              td.total {{total}}
+              | {{/currentWeek.totals}}
+    .row
+      br
+    .row
+      .column
+        button.ui.primary.right.floated.button.large#generateButton Generate
 
-                            | {{/months}}
-            .column
-                .ui.grid
-                    .four.wide.column &nbsp;
-                    .three.wide.column.right.aligned
-                        button.ui.button.previousWeek
-                            i.backward.icon
-                    .six.wide.column
-                        h4.ui.header {{currentWeek.label}}
-                    .three.wide.column
-                        button.ui.button.nextWeek
-                            i.forward.icon
-        .row
-            br
-        .row
-            .column
-                table.ui.celled.striped.table
-                  thead
-                    tr
-                      th.two.wide Project
-                      | {{#currentWeek.weekDaysLabels}}
-                      th.two.wide {{.}}
-                      | {{/currentWeek.weekDaysLabels}}
-                  tbody
-                    | {{#currentWeek.projects}}
-                    tr
-                      td(data-project-id="{{project._id}}"): strong: | {{project.name}}
-                      | {{#entries}}
-                      td
-                        .ui.fluid.input
-                            input.hours.center.aligned(type='text', value='{{hours}}', data-date='{{date}}', data-project='{{project._id}}')
-                      | {{/entries}}
-                    | {{/currentWeek.projects}}
-                    tr#totalsTemplateTarget
-                      td: strong Totals
-                      | {{#currentWeek.totals}}
-                      td.total {{total}}
-                      | {{/currentWeek.totals}}
-        .row
-            br
-        .row
-            .column
-                button.ui.primary.right.floated.button.large#generateButton Generate
+  script#totalsTemplate.template(type='x-tmpl-mustache')
+    td: strong Totals
+    | {{#currentWeek.totals}}
+    td.total {{total}}
+    | {{/currentWeek.totals}}
 
-    script#totalsTemplate.template(type='x-tmpl-mustache')
-        td: strong Totals
-        | {{#currentWeek.totals}}
-        td.total {{total}}
-        | {{/currentWeek.totals}}
-
-    script.
-        WorkHours.Index.load()
+  script.
+    WorkHours.Index.load()

@@ -14,6 +14,7 @@ router.post('/start', function(req, res, next) {
   let body = req.body,
     username = body.username,
     password = body.password,
+    submitHours = body.submitHours,
     data = body.data;
 
   if (!username || !password || !data) {
@@ -28,11 +29,11 @@ router.post('/start', function(req, res, next) {
         timeCard.quitBrowser();
         return res.json({ message: message.error })
       }
-      return timeCard.executeTimeSheet(timeSheetParser.parse(data))
+      return timeCard.executeTimeSheet(timeSheetParser.parse(data), submitHours)
     })
-    .then((response) => res.json({ message: 'Hours has been successfully entered into the System.' }))
+    .then((response) => res.json({ message: response }))
     .catch((error) => {
-      //timeCard.quitBrowser();
+      timeCard.quitBrowser();
       return res.json({ message: `Error: ${error}` })
     });
 });
