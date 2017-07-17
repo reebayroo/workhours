@@ -32,52 +32,37 @@ class Execute {
   }
 
   executeTimeSheet(timeSheet, submit) {
-    return this.submitHours(timeSheet)
+    return this.saveHours(timeSheet)
       .then(() => this.refreshPage())
       .then(() => this.validateTimeEntryAndSubmit(submit));
   }
 
   validateTimeEntryAndSubmit(submit) {
-    let message;
+    let error;
     return new Promise((resolve, reject) => {
-
+      if (!submit) {
+        return resolve('Please review your saved hours. Thank You!');
+      }
       let promise = _.map(days, (day) => {
         return this.click(Execute.dayBinder(day, null))
           .then(() => this.checkStatus(day))
           .then((status) => {
-            if (status[2] === 'Posted to E1' || status[2] === 'Submitted and Approved' ||
-                status[2] === 'Submitted to E1') {
-              console.log(`Hours for ${day} has been already submitted to E1.`);
-            }
-            if (status[2] === 'Saved Only') {
+            this.hoursAlreadyWalked(status, day);
 
+            if (status[2] === 'Saved Only') {
               status = _.filter(status, (s) => s !== '--');
               status.pop();
 
               let innerPromise = _.map(status, (s) => {
-                let hours = parseInt(s);
-                if (hours > 8) {
-                  throw `You can not enter more than 8 hours. User tried: ${status[0]}`;
-                } else if (hours < 0) {
-                  throw `You can not enter Zero hours. User tried: ${status[0]}`
+                if (parseInt(s) > 8) {
+                  error = `You can not enter more than 8 hours. User tried: ${status[0]}`;
+                  return Promise.resolve();
+                } else if (parseInt(s) < 0) {
+                  error = `You can not enter Zero hours. User tried: ${status[0]}`;
+                  return Promise.resolve();
                 } else {
                   //todo
-                  if (submit) {
-                    this.click(WebElements.SUBMIT_SAVED_HOURS)
-                      .then(() => this.handleAlert())
-                      .then(this.wait(500))
-                      .then(() => this.checkStatus(day))
-                      .then((status) => {
-                        if (status[1] !== 'Posted to E1' || status[1] !== 'Submitted and Approved') {
-                          //throw `Hours not submitted for ${day}`;
-                        }
-                        message = 'Hours has been successfully entered into the System. Thank You!';
-                        return Promise.resolve();
-                      });
-                  } else {
-                    message = 'Please review your saved hours. Thank You!';
-                    return Promise.resolve();
-                  }
+                  return this.submitHours(day);
                 }
               });
               return Promise.all(innerPromise);
@@ -86,14 +71,36 @@ class Execute {
             return Promise.resolve();
           });
       });
-      Promise.all(promise).then(() => resolve(message)).catch(reject)
+      Promise.all(promise)
+        .then(() => error ? reject(error) : resolve('Hours has been successfully entered into the System. Thank You!'))
+        .catch(reject)
     })
   }
 
-  submitHours(timeSheet) {
+  submitHours(day) {
+    return this.click(WebElements.SUBMIT_SAVED_HOURS)
+      .then(() => this.handleAlert())
+      .then(this.wait(500))
+      .then(() => this.checkStatus(day))
+      .then((status) => {
+        if (status[1] !== 'Posted to E1' || status[1] !== 'Submitted and Approved') {
+          //todo
+          //throw `Hours not submitted for ${day}`;
+        }
+        return Promise.resolve();
+      });
+  }
+
+  hoursAlreadyWalked(status, day) {
+    if (status[2] === 'Posted to E1' || status[2] === 'Submitted and Approved' ||
+        status[2] === 'Submitted to E1') {
+      console.log(`Hours for ${day} has been already submitted to E1.`);
+    }
+  }
+
+  saveHours(timeSheet) {
     return new Promise((resolve, reject) => {
       let promise = _.map(timeSheet, (days) => {
-        //this.checkDayStatus(days);
         let innerPromise = _.map(days, (project) => {
           if (project.totalHours > 0) {
             return this.sendData(WebElements.SEARCH_WORK_ORDER, project.orderNumber)
