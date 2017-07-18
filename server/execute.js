@@ -47,7 +47,7 @@ class Execute {
         return this.click(Execute.dayBinder(day, null))
           .then(() => this.checkStatus(day))
           .then((status) => {
-            this.hoursAlreadyWalked(status, day);
+            Execute.hoursAlreadyWalked(status, day);
 
             if (status[2] === 'Saved Only') {
               status = _.filter(status, (s) => s !== '--');
@@ -91,7 +91,7 @@ class Execute {
       });
   }
 
-  hoursAlreadyWalked(status, day) {
+  static hoursAlreadyWalked(status, day) {
     if (status[2] === 'Posted to E1' || status[2] === 'Submitted and Approved' ||
         status[2] === 'Submitted to E1') {
       console.log(`Hours for ${day} has been already submitted to E1.`);
@@ -148,6 +148,7 @@ class Execute {
   }
 
   quitBrowser() {
+    this.driver.manage().deleteAllCookies();
     return this.driver.quit()
   }
 
