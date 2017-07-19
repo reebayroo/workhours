@@ -201,25 +201,43 @@ var WorkHours =
 	  (0, _jquery2.default)('#generateButton').click(generateReport);
 	}
 
+	function setLoading(flag) {
+	  flag ? (0, _jquery2.default)('#loader').show() : (0, _jquery2.default)('#loader').hide();
+	}
+
 	function submitHours() {
 	  var username = (0, _jquery2.default)('#userName').val(),
 	      password = (0, _jquery2.default)('#password').val(),
-	      data = (0, _jquery2.default)('#reportText').val();
+	      data = (0, _jquery2.default)('#reportText').val(),
+	      submitHours = (0, _jquery2.default)('#submit').html() === 'Submit Hours';
 	  var pathname = window.location.origin;
+	  setLoading(true);
 	  return _axios2.default.post(pathname + '/start', {
 	    username: username,
 	    password: password,
-	    data: data
+	    data: data,
+	    submitHours: submitHours
 	  }).then(function (res) {
+	    setLoading(false);
 	    (0, _jquery2.default)('#successMessage').show();
 	    (0, _jquery2.default)('#message').empty().append(res.data.message);
 	  }).catch(function (error) {
+	    setLoading(false);
 	    (0, _jquery2.default)('#errorMessage').show();
 	    (0, _jquery2.default)('#error').empty().append(error);
 	  });
 	}
 
 	var bindSubmitHours = function bindSubmitHours() {
+
+	  (0, _jquery2.default)('#submitHoursCheckbox').click(function () {
+	    if ((0, _jquery2.default)(this).is(':checked')) {
+	      (0, _jquery2.default)('#submit').html('Submit Hours');
+	    } else {
+	      (0, _jquery2.default)('#submit').html('Save Hours');
+	    }
+	  });
+
 	  (0, _jquery2.default)('#submit').click(submitHours);
 	  (0, _jquery2.default)('#clear').click(function () {
 	    (0, _jquery2.default)('#successMessage').hide();

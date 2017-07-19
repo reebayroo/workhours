@@ -10,23 +10,46 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Work Hours' });
 });
 
+function isJson(data) {
+  try {
+    JSON.parse(data);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
 router.post('/start', function(req, res, next) {
   let body = req.body,
     username = body.username,
     password = body.password,
+    submitHours = body.submitHours,
     data = body.data;
 
   if (!username || !password || !data) {
     return res.json({ message: 'Please provide username password and time-sheet data!!' })
   }
 
+  if (!isJson(data)) {
+    return res.json({ message: 'Invalid Json!!' })
+  }
+
   let timeCard = new Execute(TIME_CARD_URL, 'chrome');
 
-  return timeCard.authenticateUser(username, password)
-    .then(() => timeCard.executeTimeSheet(timeSheetParser.parse(data)))
-    .then((response) => res.json({ message: 'Hours has been successfully entered into the System.' }))
+  timeCard.authenticateUser(username, password)
+    .then((message) => {
+      if (message && message.user === 'invalid') {
+        timeCard.quitBrowser();
+        return res.json({ message: message.error })
+      }
+      timeCard.executeTimeSheet(timeSheetParser.parse(data), submitHours)
+        .then((response) => {
+          timeCard.quitBrowser();
+          return res.json({ message: response })
+        })
+    })
     .catch((error) => {
-      //timeCard.quitBrowser();
+      timeCard.quitBrowser();
       return res.json({ message: `Error: ${error}` })
     });
 });

@@ -117,26 +117,44 @@ function rebindHours() {
   $('#generateButton').click(generateReport);
 }
 
+function setLoading(flag) {
+  flag ? $('#loader').show() : $('#loader').hide();
+}
+
 function submitHours() {
   let username = $('#userName').val(),
     password = $('#password').val(),
-    data = $('#reportText').val();
+    data = $('#reportText').val(),
+    submitHours = $('#submit').html() === 'Submit Hours';
   let pathname = window.location.origin;
+  setLoading(true);
   return axios.post(`${pathname}/start`, {
     username: username,
     password: password,
-    data: data
+    data: data,
+    submitHours: submitHours
   }).then((res) => {
+      setLoading(false)
       $('#successMessage').show();
       $('#message').empty().append(res.data.message);
     })
     .catch((error) => {
+      setLoading(false)
       $('#errorMessage').show();
       $('#error').empty().append(error);
     });
 }
 
 let bindSubmitHours = function() {
+
+  $('#submitHoursCheckbox').click(function() {
+    if ($(this).is(':checked')) {
+      $('#submit').html('Submit Hours');
+    } else {
+      $('#submit').html('Save Hours');
+    }
+  });
+
   $('#submit').click(submitHours);
   $('#clear').click(() => {
     $('#successMessage').hide();
