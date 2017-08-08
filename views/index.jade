@@ -26,6 +26,9 @@ block content
     .ui.tab(data-tab='tabHours')
       #hoursTemplateTarget
     .ui.tab(data-tab='tabReport')
+      .column
+        textarea#reportText(rows=30, cols=150)
+    .row(style='display:none')#submition
       .ui.message(style='display:none')#errorMessage
         .header.ui.red.label
           #error
@@ -52,9 +55,6 @@ block content
             .eight.wide.field
               button.ui.primary.button#submit Save Hours
               button.ui.negative.button#clear Clear
-
-      .column
-        textarea#reportText(rows=30, cols=150)
 
 
 
@@ -132,9 +132,9 @@ block scripts
               | {{/currentWeek.totals}}
     .row
       br
-    .row
-      .column
-        button.ui.primary.right.floated.button.large#generateButton Generate
+    //.row
+    //  .column
+    //    button.ui.primary.right.floated.button.large#generateButton Generate
 
   script#totalsTemplate.template(type='x-tmpl-mustache')
     td: strong Totals

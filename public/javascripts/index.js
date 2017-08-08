@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Model from './model';
 import mustache from 'mustache';
 import axios from 'axios';
+import _ from 'lodash';
 
 
 let model = new Model(),
@@ -121,10 +122,10 @@ function setLoading(flag) {
   flag ? $('#loader').show() : $('#loader').hide();
 }
 
-function submitHours() {
+function submitHours(data) {
   let username = $('#userName').val(),
     password = $('#password').val(),
-    data = $('#reportText').val(),
+    //data = $('#reportText').val(),
     submitHours = $('#submit').html() === 'Submit Hours';
   let pathname = window.location.origin;
   setLoading(true);
@@ -145,7 +146,32 @@ function submitHours() {
     });
 }
 
-let bindSubmitHours = function() {
+function generateReportAndSubmit() {
+  let text = model.generateReport();
+  /* this changes both the tab content and tab item */
+  $('#reportText').val(text);
+  submitHours(text);
+}
+
+function bindSubmitHours() {
+
+  let tabs = ['tabHours', 'tabProject', 'tabReport'];
+  _.map(tabs, (tab) => {
+    $(`.item[data-tab=${tab}]`).click(() => {
+      tab === 'tabHours' ? $('#submition').show() : $('#submition').hide()
+    })
+  })
+
+
+  $('#submit').click(() => generateReportAndSubmit());
+  $('#clear').click(function() {
+    $('#successMessage').hide();
+    $('#errorMessage').hide();
+    $('#userName').val('');
+    $('#password').val('');
+    $('#reportText').val('');
+    $('#error').empty();
+  });
 
   $('#submitHoursCheckbox').click(function() {
     if ($(this).is(':checked')) {
@@ -154,17 +180,7 @@ let bindSubmitHours = function() {
       $('#submit').html('Save Hours');
     }
   });
-
-  $('#submit').click(submitHours);
-  $('#clear').click(() => {
-    $('#successMessage').hide();
-    $('#errorMessage').hide();
-    $('#userName').val('');
-    $('#password').val('');
-    $('#reportText').val('');
-    $('#error').empty();
-  });
-};
+}
 
 function load() {
   projectsTemplate = $('#projectsTemplate').html();
@@ -182,9 +198,9 @@ function load() {
     }
   });
   $('.btn-save').click(save);
-  bindSubmitHours();
 
   refreshProjects();
+  bindSubmitHours();
 }
 module.exports = {
   load: load
