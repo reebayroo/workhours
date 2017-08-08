@@ -156,11 +156,8 @@ function generateReportAndSubmit() {
 function bindSubmitHours() {
 
   let tabs = ['tabHours', 'tabProject', 'tabReport'];
-  _.map(tabs, (tab) => {
-    $(`.item[data-tab=${tab}]`).click(() => {
-      tab === 'tabHours' ? $('#submition').show() : $('#submition').hide()
-    })
-  })
+  _.map(tabs, (tab) => $(`.item[data-tab=${tab}]`)
+    .click(() => tab === 'tabHours' ? $('#submition').show() : $('#submition').hide()))
 
 
   $('#submit').click(() => generateReportAndSubmit());
