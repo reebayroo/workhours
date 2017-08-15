@@ -29,6 +29,7 @@ class Execute {
       .then((driverInstance) => this.driver = driverInstance)
       .then(() => this.waitTimeOut = new WaitTimeOut(this.driver))
       .then(() => this.getURL(this.url))
+      .catch((err) => err)
   }
 
   executeTimeSheet(timeSheet, submit) {
@@ -149,7 +150,7 @@ class Execute {
 
   quitBrowser() {
     this.driver.manage().deleteAllCookies();
-    return this.driver.quit()
+    return this.driver.close().then(() => this.driver.quit());
   }
 
   wait(ms) {
