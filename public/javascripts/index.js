@@ -41,7 +41,7 @@ function refreshTotals() {
   let processedHtml = mustache.render(totalsTemplate, {
     currentWeek: hoursState.currentWeek
   });
-  $('#totalsTemplateTarget').html(processedHtml).ready(rebindHours);
+  $('#totalsTemplateTarget').html(processedHtml);
 }
 
 function refreshHours() {
@@ -119,7 +119,8 @@ function rebindHours() {
 }
 
 function setLoading(flag) {
-  flag ? $('#loader').show() : $('#loader').hide();
+  if (flag) $('#loader').show();
+  else $('#loader').hide();
 }
 
 function submitHours(data) {
@@ -130,17 +131,17 @@ function submitHours(data) {
   let pathname = window.location.origin;
   setLoading(true);
   return axios.post(`${pathname}/start`, {
-    username: username,
-    password: password,
-    data: data,
-    submitHours: submitHours
-  }).then((res) => {
-      setLoading(false)
+      username: username,
+      password: password,
+      data: data,
+      submitHours: submitHours
+    }).then((res) => {
+      setLoading(false);
       $('#successMessage').show();
       $('#message').empty().append(res.data.message);
     })
     .catch((error) => {
-      setLoading(false)
+      setLoading(false);
       $('#errorMessage').show();
       $('#error').empty().append(error);
     });
