@@ -237,7 +237,7 @@ var WorkHours =
 	  var text = model.generateReport();
 	  /* this changes both the tab content and tab item */
 	  (0, _jquery2.default)('#reportText').val(text);
-	  submitHours(text);
+	  // submitHours(text);
 	}
 
 	function bindSubmitHours() {

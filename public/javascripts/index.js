@@ -151,7 +151,7 @@ function generateReportAndSubmit() {
   let text = model.generateReport();
   /* this changes both the tab content and tab item */
   $('#reportText').val(text);
-  submitHours(text);
+  // submitHours(text);
 }
 
 function bindSubmitHours() {
