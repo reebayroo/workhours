@@ -1,0 +1,36 @@
+doctype html
+html.no-js
+  head
+    meta(charset='utf-8')
+    meta(name='description', content='')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    meta(name='mobile-web-app-capable', content='yes')
+    script(src='/build/bundle.js')        
+
+    // endbuild
+  body
+    nav.ui.fixed.menu.inverted.navbar
+      a.brand.item(href='') WebKit Test
+      //- a.active.item(href='') Home
+      //- a.item(href='') Features
+      //- a.item(href='') Contact
+    // end nav
+    main.ui.page.grid
+      //- .row
+      //-   .center.aligned.starter.column
+      //-     h1.ui.header Semantic UI starter template
+      //-     p Use this document as a way to quickly start any new project.
+      //-     p All you get is this text and a mostly barebones HTML document.
+      .row
+      .row
+        .ui.container
+            block content      
+    // build:js scripts/vendor.js
+    // bower:js
+    //- script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
+    //- script(src='//cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.13.0/javascript/semantic.min.js')
+    // endbower
+    // endbuild
+  footer
+    block scripts
+    

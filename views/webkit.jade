@@ -1,0 +1,86 @@
+extends mobilelayout
+
+block content
+    .ui.top.attached.tabular.menu
+      .item.active(data-tab ='tabVehicles') Vehicles
+      .item(data-tab='tabVideos') Videos
+      .item(data-tab='tabFavorites') Favorites
+      .item(data-tab='tabRecent') Recent
+    //- .ui.bottom.attached.active.tab.segment
+    //-   p Tab Value
+    //-   p
+    //- .ui.bottom.attached.tab.segment
+    .ui.bottom.attached.tab.segment.active(data-tab='tabVehicles')
+        h3.ui.left.aligned.header Select Vehicles
+        #vehiclesTemplateTarget.ui.middle.aligned.selection.list
+    .ui.bottom.attached.tab.segment(data-tab='tabVideos')
+        #videosTemplateTarget
+    .ui.bottom.attached.tab.segment(data-tab='tabFavorites')
+        #favoritesTemplateTarget
+    .ui.bottom.attached.tab.segment(data-tab='tabRecent')
+        #recentTemplateTarget
+
+block scripts
+    script#vehiclesTemplate.template(type='x-tmpl-mustache')
+        h3.ui.left.aligned.header {{title}}
+            .ui.relaxed.divided.list
+                | {{#vehicles}}
+                .item
+                    .content
+                        a.header(data-id='{{id}}') 
+                            | {{year}} / {{model}} 
+                            | {{#hasVideos}}
+                            i.large.play.icon
+                            | {{/hasVideos}}                
+                | {{/vehicles}}
+
+    script#videosTemplate.template(type='x-tmpl-mustache')
+        h3.ui.left.aligned.header {{title}}
+        .ui.relaxed.divided.list        
+            | {{#videos}}
+            .item
+                i.large.play.middle.aligned.icon
+                .content
+                    a.header(data-video-id='{{id}}', data-vehicle-id='{{vehicleId}}') 
+                      | {{title}}
+                    .description Updated 12 mins ago
+            | {{/videos}}
+        .singleVideoTemplateTarget              
+
+    script#recentVideosTemplate.template(type='x-tmpl-mustache')
+        h3.ui.left.aligned.header {{title}}
+        .ui.relaxed.divided.list        
+            | {{#videos}}
+            .item
+                i.large.play.middle.aligned.icon
+                .content
+                    a.header(data-video-id='{{id}}', data-vehicle-id='{{vehicleId}}') 
+                      | {{title}}
+                    .description Updated 12 mins ago
+            | {{/videos}}
+        .singleVideoTemplateTarget              
+
+    script#favoritesTemplate.template(type='x-tmpl-mustache')
+        h3.ui.left.aligned.header {{title}}
+        .ui.relaxed.divided.list        
+            | {{#videos}}
+            .item
+                i.large.cancel.middle.aligned.icon(data-video-id='{{id}}')
+                .content: a.header(data-video-id='{{id}}') {{title}}
+            | {{/videos}}
+        .singleVideoTemplateTarget              
+
+    script#singleVideoTemplate.template(type='x-tmpl-mustache')
+        .ui.segment
+            .ui.icon.buttons
+              button.ui.button#play
+                i.play.icon
+            .ui.icon.buttons.right.floated
+              button.ui.button#favorite
+                i.bookmark.icon
+            h4.header {{title}}
+            video(width='320', height='240')
+              source(src='{{url}}', type='video/mp4')
+
+    script.
+        WorkHours.WebKit.load()    

@@ -9,6 +9,11 @@ const TIME_CARD_URL = 'http://time.tweddle.com/Account/Login';
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Work Hours' });
 });
+router.get('/webkit', function(req, res, next) {
+
+  res.render('webkit', { title: 'Work Hours', favorites: req.query.favorites || ['None'] });
+
+})
 
 function isJson(data) {
   try {

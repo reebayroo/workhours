@@ -3,8 +3,10 @@ html
   head
     title= title
     script(src='/build/bundle.js')        
-  body
-    .main.ui.container
-        block content
+  body.pushable
+    .pusher
+        .full.height
+            .ui.container
+                block content
   footer
     block scripts

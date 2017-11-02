@@ -8,11 +8,11 @@ require('../../semantic/dist/components/transition');
 require('../../semantic/dist/components/tab');
 require('jquery-number');
 import Index from './index';
+import WebKit from './webkit';
 
-
-console.log('Client .js imported');
 
 
 module.exports = {
-  Index: Index
+  Index: Index,
+  WebKit: WebKit
 };
